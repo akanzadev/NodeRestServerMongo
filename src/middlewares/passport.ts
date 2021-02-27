@@ -1,16 +1,22 @@
-import { StrategyOptions, ExtractJwt, Strategy } from "passport-jwt";
+import {
+  StrategyOptions,
+  ExtractJwt,
+  Strategy as JwtStrategy,
+} from "passport-jwt";
 import User from "../models/user.model";
+import { config } from "../config/config";
 
+// configuracion de las opciones passport
 const opts: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SEED,
+  secretOrKey: config.jwt.secret,
 };
-
-new Strategy(opts, async (decoded, done) => {
+// exportando el objeto Strategy de passport
+export default new JwtStrategy(opts, async (decoded, done) => {
   try {
     const user = await User.findById(decoded.id);
     user ? done(null, user) : done(null, false);
   } catch (error) {
-    console.log("Error");
+    new Error("Error en la autenticacion con passport");
   }
 });

@@ -2,15 +2,22 @@ import { Request, Response } from "express";
 import User from "../models/user.model";
 import cloudinary from "../config/cloudinary";
 import { success, error } from "../config/response";
+import { IUser } from "../interfaces/user.interface";
 
-export const getUsers = (req: Request, res: Response) => {
-  User.find({ state: true })
-    .skip(1)
-    .limit(20)
-    .then((data) => {
-      success(req, res, "Usuarios activos listados", 200, data);
-    })
-    .catch((e) => error(req, res, "Error al listar usuarios activos", 500, e));
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find({ state: true }).skip(1).limit(20);
+    const documents = await User.countDocuments({ state: true });
+    return res.status(200).json({
+      ok: true,
+      error: false,
+      documents,
+      message: "Listado de usuarios",
+      results: users,
+    });
+  } catch (e) {
+    error(req, res, "Error al listar usuarios activos", 500, e);
+  }
 };
 export const getUser = (req: Request, res: Response) => {
   const { id } = req.params;
@@ -21,8 +28,10 @@ export const getUser = (req: Request, res: Response) => {
     .catch((e) => error(req, res, "No se encontro usuario", 500, e));
 };
 export const createdUser = (req: Request, res: Response) => {
-  const { body } = req;
-  const user = new User(body);
+  // Recogiendo el nombre, correo y contraseña
+  const { name, email, password } = req.body as IUser;
+  // Creando el usuario
+  const user = new User({ name, email, password });
   user
     .save()
     .then((data) => {
@@ -33,7 +42,6 @@ export const createdUser = (req: Request, res: Response) => {
 export const updateUser = (req: Request, res: Response) => {
   const { id } = req.params;
   const { body } = req;
-  console.log(body);
   User.findByIdAndUpdate(id, body, { new: true })
     .then((data) =>
       success(req, res, "Usuario actualizado con exito", 201, data)
@@ -56,10 +64,12 @@ export const uploadImage = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { img, cloudinary_id } = req.body;
     const user = await User.findById(id);
-    // Eliminando archivo de cloudinary
-    const elim = await cloudinary.uploader.destroy(user!.cloudinary_id || "", {
-      resource_type: "image",
-    });
+    // Eliminando archivo de cloudinary si no es el default
+    if (user?.cloudinary_id !== "defaultImage") {
+      await cloudinary.uploader.destroy(user?.cloudinary_id || "", {
+        resource_type: "image",
+      });
+    }
     // Actualizamos el path de la imagen del respectivo usuario
     const data = await User.findByIdAndUpdate(
       id,

@@ -1,7 +1,8 @@
 import { Router } from "express";
 import upload from "../middlewares/multer";
-import { validateImg, validateImgCloud } from "../middlewares/validateImg";
+import { validateImgCloud } from "../middlewares/validateImg";
 import { uploadImage } from "../controllers/user.controller";
+import passport from "passport";
 import {
   getUser,
   getUsers,
@@ -12,9 +13,13 @@ import {
 
 const router = Router();
 const path = "/api/users/";
-router.get(`${path}`, getUsers);
+router.get(
+  `${path}`,
+  passport.authenticate("jwt", { session: false }),
+  getUsers
+);
 router.get(`${path}:id`, getUser);
-router.post(`${path}`, [upload, validateImg], createdUser);
+router.post(`${path}`, createdUser);
 router.put(`${path}:id`, updateUser);
 router.delete(`${path}:id`, deleteUser);
 // update photo from user

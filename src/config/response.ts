@@ -7,12 +7,12 @@ export const success = (
   status = 200,
   result: any = {},
   ok = true
-):Response => {
+): Response => {
   return res.status(status).json({
     ok,
     error: false,
     status,
-    body: message,
+    message,
     result,
   });
 };
@@ -23,12 +23,12 @@ export const error = (
   status = 500,
   result = {},
   ok = false
-):Response => {
+): Response => {
   return res.status(status).json({
     ok,
     error: true,
     status,
-    body: message,
+    message,
     result,
   });
 };
