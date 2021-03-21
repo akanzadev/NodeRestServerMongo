@@ -5,7 +5,7 @@ export const success = (
   res: Response,
   message = "",
   status = 200,
-  result: any = {},
+  result = {},
   ok = true
 ): Response => {
   return res.status(status).json({

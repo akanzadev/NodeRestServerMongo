@@ -15,10 +15,9 @@ const router = Router();
 const path = "/api/users/";
 router.get(
   `${path}`,
-  passport.authenticate("jwt", { session: false }),
   getUsers
 );
-router.get(`${path}:id`, getUser);
+router.get(`${path}:id`, getUser); 
 router.post(`${path}`, createdUser);
 router.put(`${path}:id`, updateUser);
 router.delete(`${path}:id`, deleteUser);

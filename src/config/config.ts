@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+// Cargando el archivo de variables de entorno
 dotenv.config();
 export const config = {
   mongo: {
@@ -8,11 +9,11 @@ export const config = {
     port: process.env.PORT || 3000,
   },
   jwt: {
-    secret: process.env.JWT_SECRET || "akanza",
+    secret: process.env.JWT_SECRET || "SEED-SECRET",
   },
   cloudinary: {
-    domain: process.env.CLOUD_NAME || "none",
-    key: process.env.CLOUD_KEY || "0",
-    keySecret: process.env.CLOUD_KEY_SECRET || "none",
+    domain: process.env.CLOUD_NAME || "YOU-CLOUD-NAME",
+    key: process.env.CLOUD_KEY || "YOU-KEY",
+    keySecret: process.env.CLOUD_KEY_SECRET || "YOU-SECRET-KEY",
   },
 };

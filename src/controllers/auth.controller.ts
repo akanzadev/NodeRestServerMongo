@@ -3,7 +3,6 @@ import User from "../models/user.model";
 import { success, error } from "../config/response";
 import { IUser } from "../interfaces/user.interface";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import { config } from "../config/config";
 
 function createToken(user: IUser) {
