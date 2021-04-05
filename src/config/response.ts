@@ -5,7 +5,7 @@ export const success = (
   res: Response,
   message = "",
   status = 200,
-  result = {},
+  result: any = "",
   ok = true
 ): Response => {
   return res.status(status).json({
@@ -21,7 +21,7 @@ export const error = (
   res: Response,
   message = "Internal server error",
   status = 500,
-  result = {},
+  result: any = "",
   ok = false
 ): Response => {
   return res.status(status).json({

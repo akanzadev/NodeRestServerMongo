@@ -20,3 +20,5 @@ export default new JwtStrategy(opts, async (decoded, done) => {
     new Error("Error en la autenticacion con passport");
   }
 });
+
+

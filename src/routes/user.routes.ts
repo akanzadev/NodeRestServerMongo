@@ -15,13 +15,14 @@ const router = Router();
 const path = "/api/users/";
 router.get(
   `${path}`,
+  [passport.authenticate("jwt", { session: false })],
   getUsers
 );
-router.get(`${path}:id`, getUser); 
+router.get(`${path}:id`, getUser);
 router.post(`${path}`, createdUser);
 router.put(`${path}:id`, updateUser);
 router.delete(`${path}:id`, deleteUser);
-// update photo from user
+// ruta para actualizar foto de usuario
 router.put(`${path}upload/:id`, [upload, validateImgCloud], uploadImage);
 
 export default router;

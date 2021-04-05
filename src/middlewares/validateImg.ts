@@ -20,7 +20,7 @@ export const validateImgCloud = async (
       req.body.cloudinary_id = public_id;
       next();
     } else {
-      error(req, res, "Por favor envie la imagen!", 500);
+      error(req, res, "Por favor envie la imagen!", 400);
     }
   } catch (err) {
     error(req, res, "Error al cargar archivos a Cloudinary", 500, err);

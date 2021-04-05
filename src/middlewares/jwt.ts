@@ -1,14 +1,25 @@
-import jwt from "jsonwebtoken";
-import { NextFunction, Request, Response } from "express";
-import { error } from "../config/response";
+import {
+  IOAuth2StrategyOption,
+  OAuth2Strategy as GoogleStrategy,
+} from "passport-google-oauth";
+import User from "../models/user.model";
+import { config } from "../config/config";
 
-const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization || "default";
-    if(!token) error(req, res, "Token invalido", 401);
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SEED || "SEED_DESARROLLO"
-    );
-    // req.user = decoded
-    next();
+// configuracion de las opciones passport
+const opts: IOAuth2StrategyOption = {
+  clientID: config.google.id,
+  clientSecret: config.google.secret,
+  callbackURL: config.jwt.secret,
 };
+// exportando el objeto Strategy de passport
+export default new GoogleStrategy(
+  opts,
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      const user = await User.findById(profile.id);
+      user ? done(null, user) : done(null, false);
+    } catch (error) {
+      new Error("Error en la autenticacion con passport");
+    }
+  }
+);
